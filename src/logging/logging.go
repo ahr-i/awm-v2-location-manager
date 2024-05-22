@@ -5,20 +5,17 @@ import (
 	"github.com/ahr-i/awm-v2-location-manager/src/logging/loggingMonitor"
 )
 
-type Logger interface {
-	Init(debugMode bool)
-	Info(msg interface{})
-	Warn(msg interface{})
-	Error(msg interface{})
-	DebugInfo(msg interface{})
-	DebugWarn(msg interface{})
-	DebugError(msg interface{})
+func Init(debugMode bool) {
+	//Logger = newLogger()
+	Logger = newLoggerMonitor()
+
+	Logger.Init(debugMode)
 }
 
-func NewLogger() Logger {
+func newLogger() Logging {
 	return loggingIPFS.NewLogger()
 }
 
-func NewLoggerMonitor() Logger {
+func newLoggerMonitor() Logging {
 	return loggingMonitor.NewLogger()
 }

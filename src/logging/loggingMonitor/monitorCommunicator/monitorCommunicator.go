@@ -1,21 +1,29 @@
 package monitorCommunicator
 
-import "log"
+import (
+	"github.com/ahr-i/awm-v2-location-manager/src/logging/logDefault"
+)
 
-func NewMonitor() *MonitorComm {
-	address := getMonitorAddress()
-	serviceName := getServiceName()
+func NewMonitor() (*MonitorComm, error) {
+	printLog()
+	err := testConnection()
+	if err != nil {
+		return nil, err
+	}
 
-	printLog(address, serviceName)
+	err = register()
+	if err != nil {
+		return nil, err
+	}
 
 	return &MonitorComm{
-		Address:     address,
-		ServiceName: serviceName,
-	}
+		Address:     getMonitorListenAddress(),
+		ServiceName: getServiceName(),
+	}, nil
 }
 
-func printLog(address string, serviceName string) {
-	log.Println("* (SYSTEM) Initialize the monitor connection.")
-	log.Printf("* (SYSTEM) Address: %s\n", address)
-	log.Printf("* (SYSTEM) Address: %s\n", serviceName)
+func printLog() {
+	logDefault.System("Initialize the monitor connection.")
+	logDefault.System("Address: " + getMonitorListenAddress())
+	logDefault.System("Service Name: " + getServiceName())
 }
