@@ -11,4 +11,5 @@ type Logger struct {
 }
 
 type MonitorComm interface {
+	SendUDPMessage(system string, msg string) error
 }
