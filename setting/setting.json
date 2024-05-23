@@ -1,6 +1,6 @@
 {
     "debug_mode":true,
-    "server_port":"9000",
+    "server_port":"9002",
     "service_name":"location_manager",
     "monitor":{
         "ip":"127.0.0.1",
