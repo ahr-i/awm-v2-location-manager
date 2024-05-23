@@ -24,7 +24,15 @@ func (m *MonitorComm) SendUDPMessage(system string, msg string) error {
 	defer senderConn.Close()
 
 	msg = fmt.Sprintf("%s %s", system, msg)
-	_, err = senderConn.Write([]byte(msg))
+	jsonData, err := json.Marshal(sendFormat{
+		ServiceName: setting.Setting.ServiceName,
+		Message:     msg,
+	})
+	if err != nil {
+		return err
+	}
+
+	_, err = senderConn.Write(jsonData)
 	if err != nil {
 		return err
 	}

@@ -9,3 +9,8 @@ type registerRequest struct {
 	ServiceName string `json:"service_name"`
 	Port        string `json:"port"`
 }
+
+type sendFormat struct {
+	ServiceName string `json:"service_name"`
+	Message     string `json:"message"`
+}
