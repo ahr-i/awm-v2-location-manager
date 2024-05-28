@@ -7,7 +7,6 @@ import (
 	"github.com/ahr-i/awm-v2-location-manager/setting"
 	"github.com/ahr-i/awm-v2-location-manager/src/corsController"
 	"github.com/ahr-i/awm-v2-location-manager/src/logging"
-	"github.com/ahr-i/awm-v2-location-manager/src/logging/logDefault"
 	"github.com/urfave/negroni"
 )
 
@@ -25,12 +24,10 @@ func startServer() {
 	handler.UseHandler(mux)
 
 	logging.Logger.Info("HTTP server start.")
-	err := http.ListenAndServe(":"+setting.Setting.ServerPort, handler)
-	logDefault.Error(err)
+	http.ListenAndServe(":"+setting.Setting.ServerPort, handler)
 }
 
 func main() {
 	initialization()
-	logging.Logger.Warn("test")
 	startServer()
 }
