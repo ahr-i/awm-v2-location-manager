@@ -15,4 +15,4 @@ In the meta repository, see the list of 'Repository Classifications' in item #1.
 
 ## 2. Architecture
 ![msa_architecture](./doc/file/image/readme_2.png)
-![msa_service](./doc/file/image/readme_2_1.png)
+<!--![msa_service](./doc/file/image/readme_2_1.png)-->

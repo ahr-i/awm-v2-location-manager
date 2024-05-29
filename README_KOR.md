@@ -15,4 +15,4 @@ meta 저장소에서 1번 항목의 '저장소 분류' 목록을 참고하십시
 
 ## 2. 아키텍처
 ![msa_architecture](./doc/file/image/readme_2.png)
-![msa_service](./doc/file/image/readme_2_1.png)
+<!--![msa_service](./doc/file/image/readme_2_1.png)-->
