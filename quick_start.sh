@@ -4,8 +4,8 @@
 PROJECT_DIR="java_version/location_server"
 NETWORK_NAME="host"
 #NETWORK_SUBNET="101.0.0.0/24"
-IMAGE_NAME="awm-v2-location_manager"
-CONTAINER_NAME="awm-v2-location_manager"
+IMAGE_NAME="awm-v2-location-manager"
+CONTAINER_NAME="awm-v2-location-manager"
 #CONTAINER_IP="101.0.0.2"
 
 # Step 1: Java Build
