@@ -9,6 +9,6 @@ public class CommSetting {
     private final String authenticationAddress;
 
     public CommSetting() {
-        authenticationAddress = "http://localhost:9001";
+        authenticationAddress = "http://127.0.0.1:9001";
     }
 }
