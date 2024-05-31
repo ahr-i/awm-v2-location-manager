@@ -10,6 +10,7 @@ CONTAINER_NAME="awm-v2-location_manager"
 
 # Step 1: Java Build
 cd $PROJECT_DIR || { echo "Directory move to $PROJECT_DIR failed."; exit 1; }
+chmod +x $PROJECT_DIR/gradlew
 ./gradlew build -x test || { echo "Build failed."; exit 1; }
 
 # Step 2: Docker Create Network
