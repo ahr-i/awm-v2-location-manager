@@ -1,17 +1,11 @@
 package com.example.location_server.Controller.LocationController;
 
-import com.example.location_server.Dto.LocationDto.InformationDto;
-import com.example.location_server.Dto.LocationDto.LocationDto;
-import com.example.location_server.Dto.LocationDto.SearchDto;
-import com.example.location_server.Dto.LocationDto.SearchInformationDto;
+import com.example.location_server.Dto.LocationDto.*;
 import com.example.location_server.Service.LocationService.SearchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -79,6 +73,18 @@ public class SearchController {
     public ResponseEntity recommendLocation(@ModelAttribute SearchDto dto) {
         // 추천 결과
         LocationDto response = service.recommendLocation(dto);
+
+        if(response != null) {
+            return ResponseEntity.ok().body(response);
+        } else {
+            return ResponseEntity.badRequest().body("추천할 장소가 없습니다.");
+        }
+    }
+
+    // Image Processing Server를 사용하여 이미지 기반 장소 추천
+    @PostMapping("/recommend")
+    public ResponseEntity recommendLocationWithImageProcessing(@ModelAttribute RecommendDto dto) {
+        List<RecommendResultDto> response = service.recommendLocationWithImageProcessing(dto);
 
         if(response != null) {
             return ResponseEntity.ok().body(response);

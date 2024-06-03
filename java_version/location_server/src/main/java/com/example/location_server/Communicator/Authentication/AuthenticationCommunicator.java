@@ -1,5 +1,6 @@
-package com.example.location_server.Communicator;
+package com.example.location_server.Communicator.Authentication;
 
+import com.example.location_server.Communicator.CommSetting;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
