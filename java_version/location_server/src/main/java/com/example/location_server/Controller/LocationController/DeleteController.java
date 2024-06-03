@@ -1,6 +1,6 @@
 package com.example.location_server.Controller.LocationController;
 
-import com.example.location_server.Communicator.AuthenticationCommunicator;
+import com.example.location_server.Communicator.Authentication.AuthenticationCommunicator;
 import com.example.location_server.Dto.LocationDto.LocationDto;
 import com.example.location_server.Service.LocationService.DeleteService;
 import lombok.RequiredArgsConstructor;

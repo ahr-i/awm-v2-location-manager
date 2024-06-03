@@ -1,5 +1,6 @@
 package com.example.location_server.Service.LocationService;
 
+import com.example.location_server.Communicator.ImageProcessing.ImageProcessingComm;
 import com.example.location_server.Dto.LocationDto.LocationDto;
 import com.example.location_server.Dto.LocationDto.RegisterDto;
 import com.example.location_server.JpaClass.LocationTable.Contributor;
@@ -26,6 +27,7 @@ public class RegisterService {
     private final LocationImageRepository locationImageRepository;
     private final UserRepository userRepository;
     private final LocationSetting setting;
+    private final ImageProcessingComm imageProcessing;
 
     /* 장소 등록 */
     public boolean register(RegisterDto dto, String userId) {
@@ -49,7 +51,7 @@ public class RegisterService {
                 if (existingLocation.isPresent()) {
                     Location updatedLocation = existingLocation.get();
 
-                    // Titl, Description 최신으로 변경
+                    // Title, Description 최신으로 변경
                     updatedLocation.setTitle(dto.getTitle());
                     updatedLocation.setDescription(dto.getDescription());
                 }
@@ -60,8 +62,15 @@ public class RegisterService {
 
             // Dto에 이미지가 존재하는 경우
             if(dto.getImage() != null) {
-                LocationImage locationImage = RegisterDto.toLocationImage(dto);
+                // 이미지 검증
+                boolean isSamePlace = imageProcessing.inspection(locationId, dto.getImage(), dto.getCategory());
+                if(!isSamePlace) {
+                    log.info("Stopping place registration. (Place verification result: mismatch)");
 
+                    return false;
+                }
+
+                LocationImage locationImage = RegisterDto.toLocationImage(dto);
                 locationImage.setLocationId(locationId);
 
                 // 이미지 등록

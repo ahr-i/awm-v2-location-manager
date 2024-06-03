@@ -1,16 +1,20 @@
 package com.example.location_server.Service.LocationService;
 
+import com.example.location_server.Communicator.ImageProcessing.ImageProcessingComm;
 import com.example.location_server.Dto.LocationDto.*;
 import com.example.location_server.JpaClass.LocationTable.Location;
 import com.example.location_server.Repository.LocationRepository.LocationImageRepository;
 import com.example.location_server.Repository.LocationRepository.LocationRepository;
 import com.example.location_server.Setting.LocationSetting;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +25,7 @@ public class SearchService {
     private final LocationSetting setting;
     private final LocationRepository repository;
     private final LocationImageRepository locationImageRepository;
+    private final ImageProcessingComm imageProcessing;
 
     /* 장소 범위 검색 */
     public List<LocationDto> findInRange(SearchDto dto) {
@@ -128,5 +133,26 @@ public class SearchService {
 
             return null;
         }
+    }
+
+    /* Image Processing Server를 활용한 이미지 기반 장소 추천 */
+    public List<RecommendResultDto> recommendLocationWithImageProcessing(RecommendDto dto) {
+        if(dto.getCandidate() >= 10) {
+            dto.setCandidate(10);
+        }
+
+        List<RecommendResultDto> response = new ArrayList<>();
+        List<LocationDto> imageProcessingResponse = imageProcessing.recommend(dto);
+
+        for (LocationDto locationDto : imageProcessingResponse) {
+            Optional<Location> locationResult = repository.findById(locationDto.getLocationId());
+            List<byte[]> images = locationImageRepository.findByLocationId(locationDto.getLocationId());
+
+            RecommendResultDto recommendResultDto = RecommendResultDto.toRecommendResultDto(locationResult.get(), images);
+
+            response.add(recommendResultDto);
+        }
+
+        return response;
     }
 }
