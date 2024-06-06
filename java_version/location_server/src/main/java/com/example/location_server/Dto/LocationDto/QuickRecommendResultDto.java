@@ -14,7 +14,7 @@ public class QuickRecommendResultDto {
     private double latitude;
     private double longitude;
     private String title;
-    private String image;
+    private byte[] image;
 
     static public QuickRecommendResultDto toQuickRecommendResultDto(Location location, byte[] imageBytes) {
         QuickRecommendResultDto dto = new QuickRecommendResultDto();
@@ -24,9 +24,7 @@ public class QuickRecommendResultDto {
         dto.setLatitude(location.getLatitude());
         dto.setLongitude(location.getLongitude());
         dto.setTitle(location.getTitle());
-
-        String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-        dto.setImage(base64Image);
+        dto.setImage(imageBytes);
 
         return dto;
     }
