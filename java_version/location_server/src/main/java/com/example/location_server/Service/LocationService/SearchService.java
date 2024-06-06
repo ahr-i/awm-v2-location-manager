@@ -171,7 +171,7 @@ public class SearchService {
             Optional<Location> locationResult = repository.findById(locationDto.getLocationId());
             List<byte[]> images = locationImageRepository.findByLocationId(locationDto.getLocationId());
 
-            QuickRecommendResultDto recommendResultDto = QuickRecommendResultDto.toQuickRecommendResultDto(locationResult.get(), images);
+            QuickRecommendResultDto recommendResultDto = QuickRecommendResultDto.toQuickRecommendResultDto(locationResult.get(), images.get(0));
 
             response.add(recommendResultDto);
         }

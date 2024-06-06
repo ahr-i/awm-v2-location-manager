@@ -14,9 +14,9 @@ public class QuickRecommendResultDto {
     private double latitude;
     private double longitude;
     private String title;
-    private List<ImageBase64Dto> images;
+    private String image;
 
-    static public QuickRecommendResultDto toQuickRecommendResultDto(Location location, List<byte[]> imageBytes) {
+    static public QuickRecommendResultDto toQuickRecommendResultDto(Location location, byte[] imageBytes) {
         QuickRecommendResultDto dto = new QuickRecommendResultDto();
 
         dto.setLocationId(location.getLocationId());
@@ -25,15 +25,8 @@ public class QuickRecommendResultDto {
         dto.setLongitude(location.getLongitude());
         dto.setTitle(location.getTitle());
 
-        List<ImageBase64Dto> images = imageBytes.stream().map(bytes -> {
-            String base64Image = Base64.getEncoder().encodeToString(bytes);
-            ImageBase64Dto imageDto = new ImageBase64Dto();
-
-            imageDto.setImage(base64Image);
-
-            return imageDto;
-        }).collect(Collectors.toList());
-        dto.setImages(images);
+        String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+        dto.setImage(base64Image);
 
         return dto;
     }
