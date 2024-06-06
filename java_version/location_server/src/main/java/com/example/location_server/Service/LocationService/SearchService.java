@@ -189,7 +189,7 @@ public class SearchService {
         }
 
         byte[] firstImage = images.get(0);
-        String base64EncodedImage = Base64.getEncoder().encodeToString(firstImage);
+        String base64EncodedImage = new String(firstImage);
 
         Optional<Location> result = repository.findById(locationId);
 
