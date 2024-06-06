@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -154,5 +155,49 @@ public class SearchService {
         }
 
         return response;
+    }
+
+    /* Image Processing Server를 사용하여 이미지 기반 장소 추천 (빠른 버전, 해당 장소의 이미지를 활용함.) */
+    public List<QuickRecommendResultDto> quickRecommendLocationWithImageProcessing(QuickRecommendDto dto) {
+        RecommendDto request = setRequest(dto.getLocationId());
+        if(request == null) {
+            return null;
+        }
+
+        List<QuickRecommendResultDto> response = new ArrayList<>();
+        List<LocationDto> imageProcessingResponse = imageProcessing.recommend(request);
+
+        for (LocationDto locationDto : imageProcessingResponse) {
+            Optional<Location> locationResult = repository.findById(locationDto.getLocationId());
+            List<byte[]> images = locationImageRepository.findByLocationId(locationDto.getLocationId());
+
+            QuickRecommendResultDto recommendResultDto = QuickRecommendResultDto.toQuickRecommendResultDto(locationResult.get(), images.get(0));
+
+            response.add(recommendResultDto);
+        }
+
+        return response;
+    }
+
+    public RecommendDto setRequest(int locationId) {
+        RecommendDto request = new RecommendDto();
+        List<byte[]> images = locationImageRepository.findByLocationId(locationId);
+
+        if(images == null || images.isEmpty()) {
+            log.info("Recommend fail: No Image.");
+            return null;
+        }
+
+        byte[] firstImage = images.get(0);
+        String base64EncodedImage = Base64.getEncoder().encodeToString(firstImage);
+
+        Optional<Location> result = repository.findById(locationId);
+
+        request.setCandidate(4);
+        request.setImage(base64EncodedImage);
+        request.setCategory(result.get().getCategory());
+        log.info("set request: {}, {}", result.get().getCategory(), 4);
+
+        return request;
     }
 }

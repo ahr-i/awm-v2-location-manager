@@ -92,4 +92,16 @@ public class SearchController {
             return ResponseEntity.badRequest().body("추천할 장소가 없습니다.");
         }
     }
+
+    // Image Processing Server를 사용하여 이미지 기반 장소 추천 (빠른 버전, 해당 장소의 이미지를 활용함.)
+    @PostMapping("recommend-quick")
+    public ResponseEntity quickRecommendLocationWithImageProcessing(@ModelAttribute QuickRecommendDto dto) {
+        List<QuickRecommendResultDto> response = service.quickRecommendLocationWithImageProcessing(dto);
+
+        if(response != null) {
+            return ResponseEntity.ok().body(response);
+        } else {
+            return ResponseEntity.badRequest().body("추천할 장소가 없습니다.");
+        }
+    }
 }
