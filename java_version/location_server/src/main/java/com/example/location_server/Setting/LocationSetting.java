@@ -14,13 +14,13 @@ public class LocationSetting {
 
     public LocationSetting() {
         userRate = 5;
-        latitudeRange = 1.0 / 111000.0 * 10;
+        latitudeRange = 1.0 / 111000.0 * 50;
         threshold = 0;
         registerBaseScore = 100;
         deleteBaseScore = -50;
     }
 
     public double calculateLongitudeRange(double latitude) {
-        return Math.cos(Math.toRadians(latitude)) * latitudeRange;
+        return Math.abs(Math.cos(Math.toRadians(latitude)) * latitudeRange);
     }
 }

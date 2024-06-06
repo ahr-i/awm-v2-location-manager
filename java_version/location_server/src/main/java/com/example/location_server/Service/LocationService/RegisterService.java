@@ -39,6 +39,8 @@ public class RegisterService {
             int existingLocationId = getLocationId(dto.getLatitude(), dto.getLongitude(), dto.getCategory());
             int locationId = 0;
 
+            log.info("exist location: {}", existingLocationId);
+
             // 기존의 장소가 있는 경우
             if(existingLocationId != -1) {
                 // locationId를 기존 장소의 ID로 교체
@@ -62,6 +64,7 @@ public class RegisterService {
 
             // Dto에 이미지가 존재하는 경우
             if(dto.getImage() != null) {
+                log.info("image가 존재합니다.");
                 // 이미지 검증
                 boolean isSamePlace = imageProcessing.inspection(locationId, dto.getImage(), dto.getCategory());
                 if(!isSamePlace) {
@@ -69,7 +72,7 @@ public class RegisterService {
 
                     return false;
                 }
-
+                log.info("장소 검증이 참입니다.");
                 LocationImage locationImage = RegisterDto.toLocationImage(dto);
                 locationImage.setLocationId(locationId);
 
@@ -98,6 +101,12 @@ public class RegisterService {
     public int getLocationId(double latitude, double longitude, String category) {
         // latitude, ongitude, category가 일치하는 장소 검색
         List<Location> result = locationRepository.findLocationByCategoryInRange(latitude, longitude, setting.getLatitudeRange(), setting.calculateLongitudeRange(latitude), category);
+
+        log.info("latitude: {}", latitude);
+        log.info("longitude: {}", longitude);
+        log.info("category: {}", category);
+        log.info("latitude range: {}", setting.getLatitudeRange());
+        log.info("longitude range: {}", setting.calculateLongitudeRange(latitude));
 
         if(!result.isEmpty()) {
             // 일치하는 장소가 있는 경우
