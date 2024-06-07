@@ -25,7 +25,7 @@ public class ImageProcessingComm {
     private final CommSetting setting;
 
     public boolean inspection(int locationId, String locationImage, String category) {
-        String url = setting.getImageProcessingAddress() + "/inspection";
+        String url = setting.getImageProcessingAddress() + "/inspection/";
 
         // Create RestTemplate instance
         RestTemplate restTemplate = new RestTemplate();
@@ -74,7 +74,7 @@ public class ImageProcessingComm {
     }
 
     public List<LocationDto> recommend(RecommendDto dto) {
-        String url = setting.getImageProcessingAddress() + "/recommend";
+        String url = setting.getImageProcessingAddress() + "/recommend/";
 
         // Create RestTemplate instance
         RestTemplate restTemplate = new RestTemplate();
