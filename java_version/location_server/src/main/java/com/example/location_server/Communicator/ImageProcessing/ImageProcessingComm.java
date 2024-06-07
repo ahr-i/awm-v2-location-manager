@@ -3,10 +3,8 @@ package com.example.location_server.Communicator.ImageProcessing;
 import com.example.location_server.Communicator.CommSetting;
 import com.example.location_server.Dto.LocationDto.LocationDto;
 import com.example.location_server.Dto.LocationDto.RecommendDto;
-import com.example.location_server.Dto.LocationDto.RecommendResultDto;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
@@ -14,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,9 +83,9 @@ public class ImageProcessingComm {
 
         // Create request body
         Map<String, String> requestBody = new HashMap<>();
-        requestBody.put("image_bytes", String.valueOf(dto.getImage()));
+        requestBody.put("image_base64", dto.getImage());
         requestBody.put("candidate", String.valueOf(dto.getCandidate()));
-        requestBody.put("category", String.valueOf(dto.getCategory()));
+        requestBody.put("category", dto.getCategory());
 
         // Convert request body to JSON
         ObjectMapper objectMapper = new ObjectMapper();
@@ -109,13 +108,17 @@ public class ImageProcessingComm {
             // Get response body
             String responseBody = response.getBody();
 
+            // Log the response body for debugging
+            log.info("Response Body: {}", responseBody);
+
             // Parse response JSON and extract location_id
             JsonNode root = objectMapper.readTree(responseBody);
-            if (root.isArray()) {
+            JsonNode locationIdsNode = root.path("location_id");
+            if (locationIdsNode.isArray()) {
                 List<LocationDto> results = new ArrayList<>();
-                for (JsonNode node : (ArrayNode) root) {
+                for (JsonNode node : locationIdsNode) {
                     LocationDto result = new LocationDto();
-                    result.setLocationId(node.path("location_id").asInt());
+                    result.setLocationId(Integer.parseInt(node.asText()));
                     results.add(result);
                 }
                 return results;

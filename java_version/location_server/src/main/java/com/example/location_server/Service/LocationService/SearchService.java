@@ -193,10 +193,10 @@ public class SearchService {
 
         Optional<Location> result = repository.findById(locationId);
 
-        request.setCandidate(4);
+        request.setCandidate(10);
         request.setImage(base64EncodedImage);
         request.setCategory(result.get().getCategory());
-        log.info("set request: {}, {}", result.get().getCategory(), 4);
+        log.info("set request: {}, {}", result.get().getCategory(), 10);
 
         return request;
     }
