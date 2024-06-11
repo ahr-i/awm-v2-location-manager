@@ -1,4 +1,4 @@
-# Capstone Design Project / Any Where Map
+# Capstone Design Project / Anywhere Map
 이 저장소는 AWM v2의 지도 관련 저장소입니다.
 
 ## 0. Location Manager 소개
