@@ -1,4 +1,4 @@
-# Capstone Design Project / Any Where Map
+# Capstone Design Project / Anywhere Map
 This is the map-specific repository for AWM v2.
 
 ## 0. Introduction to Location Manager
