@@ -1,6 +1,7 @@
 package com.example.location_server.Communicator.ImageProcessing;
 
 import com.example.location_server.Communicator.CommSetting;
+import com.example.location_server.Dto.LocationDto.ChattingBotResponseDto;
 import com.example.location_server.Dto.LocationDto.LocationDto;
 import com.example.location_server.Dto.LocationDto.RecommendDto;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -129,6 +130,46 @@ public class ImageProcessingComm {
         } catch (Exception e) {
             e.printStackTrace();
             log.warn("Currently, the Image Processing Server is not functioning.");
+            return null;
+        }
+    }
+
+    public ChattingBotResponseDto chattingBot(List<String> locationInfo, String query) {
+        // 이미지 처리 서버로 보낼 요청 구성
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("location_info", locationInfo);
+        requestBody.put("query", query);
+
+        // 요청을 JSON 형식으로 변환
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonRequestBody;
+        try {
+            jsonRequestBody = objectMapper.writeValueAsString(requestBody);
+        } catch (Exception e) {
+            log.error("Failed to convert request body to JSON", e);
+            return null;
+        }
+
+        // 이미지 처리 서버에 POST 요청 보내기
+        String url = setting.getImageProcessingAddress() + "/chattingbot/";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(jsonRequestBody, headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+            String responseBody = response.getBody();
+
+            // 응답 JSON을 파싱하여 bot_response 추출
+            JsonNode root = objectMapper.readTree(responseBody);
+            String botResponse = root.path("bot_response").asText();
+
+            ChattingBotResponseDto responseDto = new ChattingBotResponseDto();
+            responseDto.setResponse(botResponse);
+            return responseDto;
+        } catch (Exception e) {
+            log.error("Error occurred while communicating with image processing server", e);
             return null;
         }
     }
