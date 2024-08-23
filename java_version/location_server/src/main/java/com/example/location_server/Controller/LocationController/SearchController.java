@@ -1,5 +1,6 @@
 package com.example.location_server.Controller.LocationController;
 
+import com.example.location_server.Communicator.Authentication.AuthenticationCommunicator;
 import com.example.location_server.Dto.LocationDto.*;
 import com.example.location_server.Service.LocationService.SearchService;
 import lombok.RequiredArgsConstructor;
@@ -8,16 +9,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
-@RequestMapping("/location/search")
+@RequestMapping("/location")
 @RequiredArgsConstructor
 @Slf4j
 @RestController
 public class SearchController {
     private final SearchService service;
+    private final AuthenticationCommunicator authentication;
 
     /* range 범위에 따른 모든 장소 검색 */
-    @GetMapping("/in-range")
+    @GetMapping("/search/in-range")
     public ResponseEntity searchInRangeLocation(@ModelAttribute SearchDto dto) {
         // 범위 검색 결과
         List<LocationDto> response = service.findInRange(dto);
@@ -30,7 +33,7 @@ public class SearchController {
     }
 
     /* Max Range 안에서 Min Range를 제외한 범위 검색 */
-    @GetMapping("/within-range")
+    @GetMapping("/search/within-range")
     public ResponseEntity searchWithinRangeLocation(@ModelAttribute SearchDto dto) {
         // 범위 검색 결과
         List<LocationDto> response = service.findWithinRange(dto);
@@ -43,7 +46,7 @@ public class SearchController {
     }
 
     /* 장소의 Information 조회 (title, description, images) */
-    @GetMapping("/information")
+    @GetMapping("/search/information")
     public ResponseEntity searchLocationInformation(@ModelAttribute SearchInformationDto dto) {
         // 장소의 Information 조회 결과
         InformationDto response = service.findLocationInformation(dto);
@@ -56,7 +59,7 @@ public class SearchController {
     }
 
     /* latitude, longitude, category를 기반으로 locationId 반환 */
-    @GetMapping("/get-location-id")
+    @GetMapping("/search/get-location-id")
     public ResponseEntity searchLocationId(@ModelAttribute SearchInformationDto dto) {
         // locationId 검색 결과
         LocationDto response = service.findLocationId(dto);
@@ -69,7 +72,7 @@ public class SearchController {
     }
 
     /* category, 현재 위치, ragne를 기반으로 장소 추천 */
-    @GetMapping("/recommend-location")
+    @GetMapping("/search/recommend-location")
     public ResponseEntity recommendLocation(@ModelAttribute SearchDto dto) {
         // 추천 결과
         LocationDto response = service.recommendLocation(dto);
@@ -82,7 +85,7 @@ public class SearchController {
     }
 
     // Image Processing Server를 사용하여 이미지 기반 장소 추천
-    @PostMapping("/recommend")
+    @PostMapping("/search/recommend")
     public ResponseEntity recommendLocationWithImageProcessing(@ModelAttribute RecommendDto dto) {
         List<RecommendResultDto> response = service.recommendLocationWithImageProcessing(dto);
 
@@ -94,7 +97,7 @@ public class SearchController {
     }
 
     // Image Processing Server를 사용하여 이미지 기반 장소 추천 (빠른 버전, 해당 장소의 이미지를 활용함.)
-    @PostMapping("recommend-quick")
+    @PostMapping("/search/recommend-quick")
     public ResponseEntity quickRecommendLocationWithImageProcessing(@RequestBody QuickRecommendDto dto) {
         List<QuickRecommendResultDto> response = service.quickRecommendLocationWithImageProcessing(dto);
 
@@ -102,6 +105,21 @@ public class SearchController {
             return ResponseEntity.ok().body(response);
         } else {
             return ResponseEntity.badRequest().body("추천할 장소가 없습니다.");
+        }
+    }
+
+    @PostMapping("/chattingbot")
+    public ResponseEntity chattingBot(@RequestHeader("Authorization") String jwt, @RequestBody ChattingBotQueryDto dto) {
+        String userId = authentication.authentication(jwt);
+        if(Objects.equals(userId, "")) {
+            return ResponseEntity.badRequest().body("Unauthorized JWT.");
+        }
+
+        ChattingBotResponseDto response = service.chattingBot(dto);
+        if(response != null) {
+            return ResponseEntity.ok().body(response);
+        } else {
+            return ResponseEntity.badRequest().body("ChatBot Error.");
         }
     }
 }

@@ -3,6 +3,7 @@ package com.example.location_server.Service.LocationService;
 import com.example.location_server.Communicator.ImageProcessing.ImageProcessingComm;
 import com.example.location_server.Dto.LocationDto.*;
 import com.example.location_server.JpaClass.LocationTable.Location;
+import com.example.location_server.Repository.CommunityRepository.UserPostRepository;
 import com.example.location_server.Repository.LocationRepository.LocationImageRepository;
 import com.example.location_server.Repository.LocationRepository.LocationRepository;
 import com.example.location_server.Setting.LocationSetting;
@@ -27,6 +28,7 @@ public class SearchService {
     private final LocationRepository repository;
     private final LocationImageRepository locationImageRepository;
     private final ImageProcessingComm imageProcessing;
+    private final UserPostRepository userPostRepository;
 
     /* 장소 범위 검색 */
     public List<LocationDto> findInRange(SearchDto dto) {
@@ -199,5 +201,22 @@ public class SearchService {
         log.info("set request: {}, {}", result.get().getCategory(), 10);
 
         return request;
+    }
+
+    public ChattingBotResponseDto chattingBot(ChattingBotQueryDto dto) {
+        // locationId에 해당하는 likeCount가 상위 10개인 게시물 내용을 가져오기
+        List<String> locationInfo = userPostRepository.findTop10ContentByLocationIdOrderByLikeCountDesc(dto.getLocationId());
+
+        if (locationInfo == null || locationInfo.isEmpty()) {
+            // location 정보가 없는 경우 처리
+            log.warn("No location information found for locationId: {}", dto.getLocationId());
+            return null;
+        }
+
+        log.info("locationInfo: {}", locationInfo);
+
+        ChattingBotResponseDto response = imageProcessing.chattingBot(locationInfo, dto.getQuery());
+
+        return response;
     }
 }
